@@ -1,0 +1,149 @@
+[gd_scene load_steps=8 format=3 uid="uid://cfc54665hp7jq"]
+
+[ext_resource type="Shader" uid="uid://dese4ippmm72h" path="res://points_visualization.gdshader" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://t4u0id6fswak" path="res://visualize_as_points.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://dwl3y10ppljc4" path="res://addons/orbit-controls/orbit-controls.gd" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://bg2cpaw84yqw6" path="res://input_controller.gd" id="4_1bvp3"]
+
+[sub_resource type="Texture3DRD" id="Texture3DRD_h2yge"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
+render_priority = 0
+shader = ExtResource("1_0xm2m")
+shader_parameter/force_field = SubResource("Texture3DRD_h2yge")
+shader_parameter/field_size = Vector3i(96, 96, 96)
+shader_parameter/clip_x = 0.289
+shader_parameter/mag_min = 0.0
+shader_parameter/mag_max = 0.5
+shader_parameter/show_pressure = false
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7mycd"]
+
+[node name="Main Scene" type="Node3D"]
+
+[node name="ForceField" type="ForceField" parent="."]
+field_size = Vector3i(96, 96, 96)
+texture = SubResource("Texture3DRD_h2yge")
+emitter_pos_max = Vector3(0.54, 0.54, 0.2)
+emitter_velocity = Vector3(0, 0, 0)
+
+[node name="Points" type="MeshInstance3D" parent="." node_paths=PackedStringArray("force_field_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.5, -0.5)
+material_override = SubResource("ShaderMaterial_h2yge")
+mesh = SubResource("ArrayMesh_7mycd")
+script = ExtResource("1_ig7tw")
+force_field_node = NodePath("../ForceField")
+clip_x = 0.2
+magnitude_max = 0.5
+show_pressure = true
+
+[node name="Color Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.772734, 0.634731, 0, -0.634731, 0.772734, 0.143241, 1.05038, 1.27948)
+current = true
+fov = 45.0
+
+[node name="OrbitControls" type="Node3D" parent="."]
+script = ExtResource("3_h2yge")
+_camera = NodePath("../Color Camera")
+enable_damping = false
+metadata/_custom_type_script = "uid://dwl3y10ppljc4"
+
+[node name="MarginContainer" type="MarginContainer" parent="." node_paths=PackedStringArray("points_node", "force_field", "clip_x_slider", "vel_min_slider", "vel_max_slider", "emitter_pos_z_slider", "emitter_magnitude_slider", "show_pressure_checkbox")]
+offset_right = 321.0
+offset_bottom = 63.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+script = ExtResource("4_1bvp3")
+points_node = NodePath("../Points")
+force_field = NodePath("../ForceField")
+clip_x_slider = NodePath("VBoxContainer/Min X Container/HSlider")
+vel_min_slider = NodePath("VBoxContainer/Velocity Min Container/HSlider")
+vel_max_slider = NodePath("VBoxContainer/Velocity Max Container/HSlider")
+emitter_pos_z_slider = NodePath("VBoxContainer/Emitter Pos Z/HSlider")
+emitter_magnitude_slider = NodePath("VBoxContainer/Emitter Magnitude/HSlider")
+show_pressure_checkbox = NodePath("VBoxContainer/Toggle Pressure/CheckBox")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Min X Container" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Min X Container"]
+layout_mode = 2
+text = "Clip X:"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Min X Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="Velocity Min Container" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Velocity Min Container"]
+layout_mode = 2
+text = "Min. Magnitude"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Velocity Min Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="Velocity Max Container" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Velocity Max Container"]
+layout_mode = 2
+text = "Max. Magnitude"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Velocity Max Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="Emitter Pos Z" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Emitter Pos Z"]
+layout_mode = 2
+text = "Emitter Z (%)"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Emitter Pos Z"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+
+[node name="Emitter Magnitude" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Emitter Magnitude"]
+layout_mode = 2
+text = "Emitter Magnitude (%)"
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Emitter Magnitude"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 20.0
+step = 0.01
+
+[node name="Toggle Pressure" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Toggle Pressure"]
+layout_mode = 2
+text = "Show Pressure"
+
+[node name="CheckBox" type="CheckBox" parent="MarginContainer/VBoxContainer/Toggle Pressure"]
+layout_mode = 2

@@ -1,0 +1,11 @@
+[configuration]
+
+entry_symbol = "force_field_extension_init"
+compatibility_minimum = "4.4"
+reloadable = true
+
+[libraries]
+windows.debug.x86_64 = "res://extensions/force-field/godotforcefield.windows.debug.64.dll"
+windows.release.x86_64 = "res://extensions/force-field/godotforcefield.windows.release.64.dll"
+macos.debug = "res://extensions/force-field/libgodotforcefield.darwin.debug.64.dylib"
+macos.release = "res://extensions/force-field/libgodotforcefield.darwin.release.64.dylib"

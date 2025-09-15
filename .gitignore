@@ -1,0 +1,8 @@
+# Godot 4+ specific ignores
+project/.godot/
+/android/
+
+cmake-build-*-visual-studio
+project/extensions/force-field
+
+.idea
